@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FetcherBlockChainTest", "FetcherBlockChainTest\FetcherBlockChainTest.csproj", "{288D27D0-6AFE-405C-8A97-00431464E775}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FetcherBlockchainAPI", "FetcherBlockchainAPI\FetcherBlockchainAPI.csproj", "{67F376E0-22B9-41C5-9937-79D5557BC851}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{288D27D0-6AFE-405C-8A97-00431464E775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{288D27D0-6AFE-405C-8A97-00431464E775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{288D27D0-6AFE-405C-8A97-00431464E775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67F376E0-22B9-41C5-9937-79D5557BC851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67F376E0-22B9-41C5-9937-79D5557BC851}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67F376E0-22B9-41C5-9937-79D5557BC851}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67F376E0-22B9-41C5-9937-79D5557BC851}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

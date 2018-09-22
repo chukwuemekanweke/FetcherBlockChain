@@ -48,7 +48,9 @@ namespace Models
 
         public override bool Equals(object obj)
         {
-            Block block = (Block)obj;
+            Block block = obj as Block;
+            if (block == null)
+                return false;
             return this.TimeStamp == block.TimeStamp && this.Hash == block.Hash && this.LastHash == block.LastHash && this.Data == block.Data;
         }
 
