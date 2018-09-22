@@ -23,12 +23,13 @@ namespace Models
 
         public bool IsValidChain(List<Block> chain)
         {
-            if (Block.Genesis() != chain.FirstOrDefault())
+            var genesisBlock = Block.Genesis();
+            if (!genesisBlock.Equals(chain.FirstOrDefault()))
                 return false;
 
-            for (int i = 0; i < Chain.Count; i++)
+            for (int i = 1; i < chain.Count; i++)
             {
-                var currentBlock = Chain[i];
+                var currentBlock = chain[i];
                 var lastBlock = chain[i - 1];
 
                 if (currentBlock.LastHash != lastBlock.Hash ||

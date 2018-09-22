@@ -56,7 +56,7 @@ namespace Models
         {
             var timestamp = GenerateTimestamp();
 
-            return new Block(timestamp, "-----", "f1r57-h45h", "Genesis Block");
+            return new Block(0, "-----", "f1r57-h45h", "Genesis Block");
         }
 
         public static Block MineBlock(Block lastBlock, object data)

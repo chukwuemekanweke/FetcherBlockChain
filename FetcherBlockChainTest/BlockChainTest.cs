@@ -10,6 +10,7 @@ namespace FetcherBlockChainTest
     public class BlockChainTest
     {
         BlockChain blockChain;
+        BlockChain blockChain2;
         public BlockChainTest()
         {
 
@@ -32,6 +33,39 @@ namespace FetcherBlockChainTest
 
             Assert.Equal(data, blockChain.Chain.LastOrDefault().Data);
 
+        }
+
+        [Fact]
+        public void ValidatesAValidChainTest()
+        {
+            blockChain = new BlockChain();
+            blockChain2 = new BlockChain();
+
+            blockChain2.AddBlock("foo");
+
+            Assert.True(blockChain.IsValidChain(blockChain2.Chain));
+
+        }
+
+        [Fact]
+        public void InvalidatesChainWithACorruptGenesisBlock()
+        {
+            blockChain = new BlockChain();
+            blockChain2 = new BlockChain();
+            blockChain2.Chain.FirstOrDefault().Data = "Bad Data";
+            Assert.False(blockChain.IsValidChain(blockChain2.Chain));
+        }
+
+        [Fact]
+        public void InvalidatesACorruptChain()
+        {
+            blockChain = new BlockChain();
+            blockChain2 = new BlockChain();
+
+            blockChain2.AddBlock("foo");
+            blockChain2.Chain.LastOrDefault().Data = "Not Foo";
+
+            Assert.False(blockChain.IsValidChain(blockChain2.Chain));
         }
     }
 }
