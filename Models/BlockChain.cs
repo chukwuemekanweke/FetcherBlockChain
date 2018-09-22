@@ -41,5 +41,26 @@ namespace Models
 
             return true;
         }
+
+        public void ReplaceChain(List<Block> newChain)
+        {
+            if (this.Chain.Count >= newChain.Count)
+            {
+                Console.WriteLine("Received Chain Is Not Longer Than Current Chain");
+            }
+            else if (!IsValidChain(newChain))
+            {
+                Console.WriteLine("Received Chain Is Not Valid");
+
+            }
+            else
+            {
+                Console.WriteLine($"Replacing Old Chain Of Length {Chain.Count} With New Chain Of Length{newChain.Count}");
+                Chain = newChain;
+
+            }
+
+
+        }
     }
 }

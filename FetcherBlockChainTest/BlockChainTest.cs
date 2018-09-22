@@ -67,5 +67,34 @@ namespace FetcherBlockChainTest
 
             Assert.False(blockChain.IsValidChain(blockChain2.Chain));
         }
+
+
+        [Fact]
+        public void ItReplacesTheChainWithAValidChainTest()
+        {
+            blockChain = new BlockChain();
+            blockChain2 = new BlockChain();
+
+            blockChain2.AddBlock("goo");
+
+            blockChain.ReplaceChain(blockChain2.Chain);
+
+            Assert.Equal(blockChain2.Chain.Count, blockChain.Chain.Count);
+
+        }
+
+        [Fact]
+        public void ItDoesNotReplaceACahinWithLengththatIsEqualOrLessThanItSelf()
+        {
+            blockChain = new BlockChain();
+            blockChain2 = new BlockChain();
+
+            blockChain.AddBlock("goo");
+
+            blockChain.ReplaceChain(blockChain2.Chain);
+
+            Assert.NotEqual(blockChain2.Chain.Count, blockChain.Chain.Count);
+        }
+
     }
 }
