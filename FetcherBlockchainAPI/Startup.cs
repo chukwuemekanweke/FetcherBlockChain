@@ -13,6 +13,7 @@ using FetcherBlockchainAPI.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models;
+using FetcherP2P;
 
 namespace FetcherBlockchainAPI
 {
@@ -49,11 +50,13 @@ namespace FetcherBlockchainAPI
             //                .AddAzureADB2C(options => Configuration.Bind("AzureAdB2C", options));
 
             services.AddSingleton(typeof(BlockChain));
+            services.AddSingleton(typeof(P2PServer));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, P2PServer p2PServer)
         {
             if (env.IsDevelopment())
             {
@@ -73,6 +76,10 @@ namespace FetcherBlockchainAPI
             app.UseAuthentication();
 
             app.UseMvc();
+
+            string peersCSV = Configuration["Peers"];
+            p2PServer.PopulatePeers(peersCSV);
+            p2PServer.Listen();
         }
     }
 }

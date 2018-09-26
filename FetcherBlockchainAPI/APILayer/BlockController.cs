@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using System.Dynamic;
+using Microsoft.Extensions.Configuration;
+using FetcherP2P;
 
 namespace FetcherBlockchainAPI.APILayer
 {
@@ -14,9 +16,14 @@ namespace FetcherBlockchainAPI.APILayer
     public class BlockController : ControllerBase
     {
         BlockChain blockChain { get; set; }
-        public BlockController(BlockChain _blockChain)
+        P2PServer p2pServer { get; set; }
+        IConfiguration configuration { get; set; }
+        public BlockController(BlockChain _blockChain, P2PServer _p2pServer, IConfiguration _configuration)
         {
             this.blockChain = _blockChain;
+            this.p2pServer = _p2pServer;
+            this.configuration = _configuration;
+          
         }
 
         [Route("")]
