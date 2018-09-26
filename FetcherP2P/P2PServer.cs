@@ -12,15 +12,26 @@ namespace FetcherP2P
     {
         public int PORT = 55070;
         public string IP = "127.0.0.1";
-        public static List<IPEndPoint> Clients = new List<IPEndPoint>();
+        public static List<WebSocket> Clients = new List<WebSocket>();
         public static List<string> Peers = new List<string>();
         private WebSocketServer websocketServer;
 
         public BlockChain blockchain { get; set; }
+        public SocketCommunicator socketCommunicator { get; set; }
 
-        public P2PServer(BlockChain _blockChain)
+        public P2PServer(BlockChain _blockChain, SocketCommunicator _socketCommunicator)
         {
             blockchain = _blockChain;
+            socketCommunicator = _socketCommunicator;
+        }
+
+
+        public void SyncChains()
+        {
+            foreach (var peer in Clients)
+            {
+
+            }
         }
 
 
@@ -43,7 +54,7 @@ namespace FetcherP2P
             websocketServer = new WebSocketServer(
                 //IPAddress.Parse(IP),
                 PORT);
-            websocketServer.AddWebSocketService<ServerBehaviour>("/");
+            websocketServer.AddWebSocketService<ServerBehaviour>("/", () => new ServerBehaviour(blockchain, socketCommunicator));
             websocketServer.Start();
             if (websocketServer.IsListening)
             {
@@ -51,11 +62,6 @@ namespace FetcherP2P
                 foreach (var path in websocketServer.WebSocketServices.Paths)
                     Console.WriteLine("- {0}", path);
             }
-
-            //Console.WriteLine("\nPress Enter key to stop the server...");
-            //Console.ReadLine();
-            //websocketServer.Stop();
-
 
 
         }
@@ -79,23 +85,23 @@ namespace FetcherP2P
                 {
                     var _ws = s as WebSocketSharp.WebSocket;
                     Console.WriteLine($"Connection With Peer {peer} Established Successfully");
-                    Clients.Add(new IPEndPoint(IPAddress.Parse(ipAndPort[0]), int.Parse(ipAndPort[1])));
+                    Clients.Add(ws);
                     _ws.Send(JsonConvert.SerializeObject(blockchain.Chain));
                 };
 
                 ws.OnClose += (s, e) =>
                 {
                     Console.WriteLine($"Connection With Peer {peer} Ended Successfully");
-                    Clients.Remove(new IPEndPoint(IPAddress.Parse(ipAndPort[0]), int.Parse(ipAndPort[1])));
+                    Clients.Remove(ws);
 
                 };
 
                 ws.OnMessage += (s, e) =>
                 {
-                    var chain = JsonConvert.DeserializeObject<List<Block>>(e.Data);
+                    var _ws = s as WebSocketSharp.WebSocket;
 
+                    socketCommunicator.MessageHandler(_ws, e.Data);
 
-                    Console.WriteLine($"Received Chain {chain}");
                 };
 
                 ws.OnError += (s, e) =>
@@ -111,27 +117,7 @@ namespace FetcherP2P
 
         }
 
-        private void Ws_OnError(object sender, ErrorEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
-        private void Ws_OnMessage(object sender, MessageEventArgs e)
-        {
-            var data = JsonConvert.DeserializeObject<object>(e.Data);
-            Console.WriteLine("Peer Says: " + e.Data);
-
-        }
-
-        private void Ws_OnClose(object sender, CloseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Ws_OnOpen(object sender, EventArgs e)
-        {
-
-        }
 
 
 
@@ -328,10 +314,15 @@ namespace FetcherP2P
 
 
 
-    public class ServerBehaviour : WebSocketBehavior
+    class ServerBehaviour : WebSocketBehavior
     {
-        public ServerBehaviour()
+        BlockChain blockchain { get; set; }
+        SocketCommunicator socketCommunicator { get; set; }
+        public ServerBehaviour(BlockChain _blockChain, SocketCommunicator _socketCommunicator)
         {
+            blockchain = _blockChain;
+            socketCommunicator = _socketCommunicator;
+
         }
 
         protected override void OnOpen()
@@ -339,9 +330,7 @@ namespace FetcherP2P
 
             Uri clientURI = Context.WebSocket.Url;
             IPEndPoint ipEndPoint = Context.UserEndPoint;
-            P2PServer.Clients.Add(ipEndPoint);
-
-
+            P2PServer.Clients.Add(Context.WebSocket);
 
             Console.WriteLine($"Client Connected on {ipEndPoint.Address}:{ipEndPoint.Port}");
 
@@ -350,9 +339,8 @@ namespace FetcherP2P
 
         protected override void OnClose(CloseEventArgs e)
         {
-            Uri clientURI = Context.WebSocket.Url;
-            IPEndPoint ipEndPoint = Context.UserEndPoint;
-            P2PServer.Clients.Remove(ipEndPoint);
+
+            P2PServer.Clients.Remove(Context.WebSocket);
             base.OnClose(e);
         }
 
@@ -364,7 +352,7 @@ namespace FetcherP2P
 
         protected override void OnMessage(MessageEventArgs e)
         {
-
+            socketCommunicator.MessageHandler(Context.WebSocket, e.Data);
             base.OnMessage(e);
         }
     }

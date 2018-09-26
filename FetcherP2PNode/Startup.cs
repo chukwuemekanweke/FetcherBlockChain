@@ -20,7 +20,10 @@ namespace FetcherP2PNode
         {
             var services = new ServiceCollection()
                 .AddSingleton<BlockChain>()
-                .AddSingleton<P2PServer>();
+                .AddSingleton<P2PServer>()
+               .AddSingleton(typeof(SocketCommunicator));
+            ;
+
 
             // create a service provider from the service collection
             ServiceProvider = services.BuildServiceProvider();

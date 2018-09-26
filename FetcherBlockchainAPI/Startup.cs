@@ -51,6 +51,7 @@ namespace FetcherBlockchainAPI
 
             services.AddSingleton(typeof(BlockChain));
             services.AddSingleton(typeof(P2PServer));
+            services.AddSingleton(typeof(SocketCommunicator));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
